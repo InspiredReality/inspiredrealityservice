@@ -1,0 +1,15 @@
+name: Sync new images
+
+on:
+  push:
+    paths:
+      - 'images/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger backend sync
+        run: |
+          curl -f -X POST "${{ secrets.RAILWAY_BACKEND_URL }}/admin/sync-images" \
+            -H "Authorization: Bearer ${{ secrets.ADMIN_TOKEN }}"
