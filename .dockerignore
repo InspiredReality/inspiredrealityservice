@@ -1,1 +1,6 @@
 images/
+frontend/
+.git/
+**/__pycache__/
+**/*.pyc
+backend/.env
