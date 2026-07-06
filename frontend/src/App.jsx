@@ -23,6 +23,8 @@ export default function App() {
   const [offset, setOffset] = useState(0);
   const [gridLoading, setGridLoading] = useState(false);
 
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     fetchTags()
       .then(setTags)
@@ -37,9 +39,12 @@ export default function App() {
 
   const handleRandom = useCallback(async () => {
     setRandomLoading(true);
+    setError(null);
     try {
       const s = await fetchRandom({ tags: selectedTags, mode });
       setRandomSticker(s);
+    } catch (err) {
+      setError(err.message);
     } finally {
       setRandomLoading(false);
     }
@@ -47,6 +52,7 @@ export default function App() {
 
   const loadGrid = useCallback(async (reset = true) => {
     setGridLoading(true);
+    setError(null);
     const currentOffset = reset ? 0 : offset;
     try {
       const data = await fetchStickers({
@@ -63,6 +69,8 @@ export default function App() {
         setOffset((o) => o + PAGE_SIZE);
       }
       setTotal(data.total);
+    } catch (err) {
+      setError(err.message);
     } finally {
       setGridLoading(false);
     }
@@ -111,6 +119,7 @@ export default function App() {
       </section>
 
       <main className="main-content">
+        {error && <p className="error">{error}</p>}
         {view === "random" ? (
           <RandomSticker
             sticker={randomSticker}

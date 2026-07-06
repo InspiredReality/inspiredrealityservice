@@ -240,3 +240,13 @@ body {
   font-size: 0.9rem;
   padding: 2rem 0;
 }
+
+.error {
+  color: #f87171;
+  background: #2a1414;
+  border: 1px solid #5c1f1f;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
