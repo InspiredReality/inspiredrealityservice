@@ -7,7 +7,10 @@ from crud import upsert_image
 async def sync_images_from_github(db: AsyncSession) -> dict:
     repo = os.environ["GITHUB_REPO"]
     branch = os.environ.get("GITHUB_BRANCH", "main")
-    jsdelivr_base = os.environ["JSDELIVR_BASE"].rstrip("/") + "/"
+    # jsDelivr/raw.githubusercontent.com serve the LFS pointer text, not the
+    # image bytes, for LFS-tracked files. media.githubusercontent.com resolves
+    # the actual LFS object, so images/ (LFS-tracked) must be served from there.
+    cdn_base = os.environ["IMAGE_CDN_BASE"].rstrip("/") + "/"
     github_token = os.environ.get("GITHUB_TOKEN")
 
     url = f"https://api.github.com/repos/{repo}/contents/images?ref={branch}"
@@ -29,7 +32,7 @@ async def sync_images_from_github(db: AsyncSession) -> dict:
         if not filename.lower().endswith(".png"):
             continue
         total += 1
-        cdn_url = jsdelivr_base + filename
+        cdn_url = cdn_base + filename
         _, is_new = await upsert_image(db, filename, cdn_url)
         if is_new:
             added += 1

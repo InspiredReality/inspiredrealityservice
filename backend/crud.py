@@ -83,7 +83,7 @@ async def get_random_image(
     tags: list[str] | None,
     mode: str = "or",
 ) -> Image | None:
-    stmt = select(Image.id).options(selectinload(Image.tags))
+    stmt = select(Image.id)
 
     if tags:
         subq, has_filter = _build_tag_filter_query(tags, mode)
